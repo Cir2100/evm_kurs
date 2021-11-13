@@ -1,7 +1,8 @@
 import tkinter as tk
-from UI.MS import MS
-from UI.CD import CD
-from UI.DC import DC
+from UI.MS import create_MS
+from UI.CD import create_CD
+from UI.DC import create_DC
+from data.Elements import elements
 
 class App(tk.Tk):
     def __init__(self):
@@ -19,16 +20,20 @@ class App(tk.Tk):
         add_menu.add_command(label="Не", command=self.add_no)
         main_menu = tk.Menu(master=self, tearoff=0)
         main_menu.add_cascade(label="Добавить элемент", menu=add_menu)
+        main_menu.add_command(label="Проверить",  command=self.check)
         self.config(menu=main_menu)
 
+    def check(self):
+        elements.print_info()
+
     def add_mul(self):
-        MS(self)
+        create_MS(self)
 
     def add_dc(self):
-        DC(self)
+        create_DC(self)
 
     def add_cd(self):
-        CD(self)
+        create_CD(self)
 
     def add_no(self):
-        NO(self)
+        create_NO(self)
