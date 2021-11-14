@@ -37,7 +37,8 @@ class SettingFrame(tk.Toplevel):
         combobx.bind("<<ComboboxSelected>>", self.chouse_element)
         self.combodxs.append(combobx)
         if current[0] > 6:
-            additional_combodxs = ttk.Combobox(self, values=elements[current[0] - 7].get_outputs(), width=5, state="readonly")
+            additional_combodxs = ttk.Combobox(self, values=elements[elements.index(combobx.get())].get_outputs(),
+                                               width=5, state="readonly")
             additional_combodxs.current(current[1])
             additional_combodxs.place(x=130, y=self.attr_y)
             additional_combodxs.bind("<<ComboboxSelected>>", self.chouse_element)
@@ -48,7 +49,7 @@ class SettingFrame(tk.Toplevel):
     def set_settings(self):
         settings = []
         for combodx in self.combodxs:
-            if combodx.current() < 7:
+            if combodx.current() < 7: #check
                 settings.append([combodx.get()])
             else:
                 for com in self.additional_combodxs:

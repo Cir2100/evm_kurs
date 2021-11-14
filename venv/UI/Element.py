@@ -45,6 +45,7 @@ class Element(tk.Canvas, metaclass=ABCMeta):
 
     def delete_elemet(self):
         elements.delete_element(self)
+        elements.update_inputs()
         self.destroy()
 
     @abstractmethod
@@ -59,21 +60,29 @@ class Element(tk.Canvas, metaclass=ABCMeta):
     def get_outputs(self) -> list:
         raise NotImplementedError("check_ripeness method not implemented!")
 
+    def update_inputs(self):
+        for i in range(len(self.inputsTextview)):
+            if self.inputs[i][0] in inputs_dict:
+                self.inputs_ids[i] = [inputs_dict[self.inputs[i][0]], -1]
+            else:
+                names = elements.get_names()
+                if self.inputs[i][0] in names:
+                    index = names.index(self.inputs[i][0])
+                    index_self = names.index(self.name)
+                    flag = 0
+                    if index_self < index:
+                        flag = 1
+                    self.inputs_ids[i] =  [index + 7 - flag, elements[index].get_outputs().index(self.inputs[i][1])]
+                else:
+                    self.inputs_ids[i] = [0, -1]
+                    self.inputs[i] = "0"
+        self.update_view()
+
     def update_view(self):
         for i in range(len(self.inputsTextview)):
             self.itemconfigure(self.inputsTextview[i], text=self.inputs[i])
-            if self.inputs[i][0] in inputs_dict:
-                self.inputs_ids[i] = [inputs_dict[self.inputs[i][0]], -1]
-            names = elements.get_names()
-            if self.inputs[i][0] in names:
-                index = names.index(self.inputs[i][0])
-                index_self = names.index(self.name)
-                flag = 0
-                if index_self < index:
-                    flag = 1
-                self.inputs_ids[i] =  [index + 7 - flag, elements[index].get_outputs().index(self.inputs[i][1])]
 
 
     def updateInputs(self, settings):
         self.inputs = settings
-        self.update_view()
+        self.update_inputs()

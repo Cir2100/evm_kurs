@@ -31,6 +31,10 @@ class Elements():
     def delete_element(self, obj):
         self.elements.remove(obj)
 
+    def update_inputs(self):
+        for element in self.elements:
+            element.update_inputs()
+
     def print_info(self):
         print("Info:")
         for element in self.elements:
