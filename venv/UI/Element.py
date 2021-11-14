@@ -1,13 +1,15 @@
 import tkinter as tk
 from tkinter import ttk
 from abc import ABCMeta, abstractmethod
+
+from UI.SettingFrame import SettingFrame
 from data.Elements import elements
 from data.inputs_dict import inputs_dict
 
 
 class Element(tk.Canvas, metaclass=ABCMeta):
     def __init__(self, root, name):
-        self.image_size_x = 155
+        self.image_size_x = 160
         self.image_size_y = 145
         self.start_text = 20
         super(Element, self).__init__(root, width=self.image_size_x, height=self.image_size_y, bg='white')
@@ -19,12 +21,13 @@ class Element(tk.Canvas, metaclass=ABCMeta):
         self.img = tk.PhotoImage(file=f"venv\\resources\\{name[0:2]}.png")
         imagesprite = self.create_image(20, 0, image=self.img, anchor=tk.NW)
 
-        self.create_text(75, 134, text=name, anchor=tk.N)
+        self.create_text(95, 134, text=name, anchor=tk.N)
 
         self.root = root
         self.inputs = []
         self.inputsTextview = []
-        self.inputs_ids = []
+        self.name_inputs = []
+        self.inputs_value = []
 
         self.name = name
 
@@ -48,9 +51,10 @@ class Element(tk.Canvas, metaclass=ABCMeta):
         elements.update_inputs()
         self.destroy()
 
-    @abstractmethod
     def create_setting_dialog(self):
-        raise NotImplementedError("check_ripeness method not implemented!")
+        settingFrame = SettingFrame(self.root, self.name, self)
+        for i in range(len(self.name_inputs)):
+            settingFrame.add_input(self.name_inputs[i], self.inputs[i])
 
     @abstractmethod
     def init_view(self):
@@ -60,27 +64,40 @@ class Element(tk.Canvas, metaclass=ABCMeta):
     def get_outputs(self) -> list:
         raise NotImplementedError("check_ripeness method not implemented!")
 
+    def get_inputs(self) -> list:
+        return self.inputs
+
     def update_inputs(self):
-        for i in range(len(self.inputsTextview)):
-            if self.inputs[i][0] in inputs_dict:
-                self.inputs_ids[i] = [inputs_dict[self.inputs[i][0]], -1]
-            else:
-                names = elements.get_names()
-                if self.inputs[i][0] in names:
-                    index = names.index(self.inputs[i][0])
-                    index_self = names.index(self.name)
-                    flag = 0
-                    if index_self < index:
-                        flag = 1
-                    self.inputs_ids[i] =  [index + 7 - flag, elements[index].get_outputs().index(self.inputs[i][1])]
-                else:
-                    self.inputs_ids[i] = [0, -1]
-                    self.inputs[i] = "0"
         self.update_view()
+
+    def update_inputs_value(self, params):
+        self.inputs_value.clear()
+        for cur_input in self.inputs:
+            if cur_input[1] != "-1":
+                index_element = elements.index(cur_input[0])
+                self.inputs_value.append(elements[index_element].
+                                         get_outputs_value(params)[elements[index_element].
+                                         get_outputs().index(cur_input[1])])
+            else:
+                index_element = inputs_dict[cur_input[0]]
+                if index_element < 2:
+                    self.inputs_value.append(index_element)
+                else:
+                    self.inputs_value.append(params[index_element - 2])
+
+    @abstractmethod
+    def get_outputs_value(self, params) -> list:
+        raise NotImplementedError("check_ripeness method not implemented!")
 
     def update_view(self):
         for i in range(len(self.inputsTextview)):
-            self.itemconfigure(self.inputsTextview[i], text=self.inputs[i])
+            text = self.inputs[i][0]
+            if self.inputs[i][1] != "-1":
+                text += "." + self.inputs[i][1]
+                if self.inputs[i][0] not in elements.get_names():
+                    text = "0"
+                    self.inputs[i] = ["0", "-1"]
+            self.itemconfigure(self.inputsTextview[i], text=text)
 
 
     def updateInputs(self, settings):

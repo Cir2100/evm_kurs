@@ -1,5 +1,3 @@
-
-
 class Elements():
     def __init__(self):
         self.elements = []
@@ -8,7 +6,7 @@ class Elements():
         self.elements.append(element)
 
     def get_count(self) -> dict:
-        count = {"MS": 0, "CD": 0, "DC": 0, "NO": 0}
+        count = {"MS": 0, "CD": 0, "DC": 0, "NO": 0, "OUT" : 0}
         for element in self.elements:
             for key in count.keys():
                 if key in element.get_name():
@@ -18,7 +16,7 @@ class Elements():
     def get_names_without_this(self, name) -> list:
         names = []
         for element in self.elements:
-            if element.get_name() != name:
+            if element.get_name() != name and element.get_name() != "OUT":
                 names.append(element.get_name())
         return names
 
@@ -44,6 +42,12 @@ class Elements():
     def index(self, name) -> int:
         for i in range(len(self.elements)):
             if name == self.elements[i].get_name():
+                return i
+        return -1
+
+    def get_index_out(self):
+        for i in range(len(self.elements)):
+            if "OUT" == self.elements[i].get_name():
                 return i
         return -1
 

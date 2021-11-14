@@ -1,5 +1,6 @@
 from tkinter import ttk
 import tkinter as tk
+
 from data.Elements import elements
 from data.inputs_dict import inputs_dict
 
@@ -28,18 +29,21 @@ class SettingFrame(tk.Toplevel):
     def add_input(self, name, current):
         label_selection = tk.Label(self, text=f"Вход {name}")
         label_selection.place(x=10, y=self.attr_y)
+
         values = list(inputs_dict.keys())
         values.extend(elements.get_names_without_this(self.title_str))
+
         combobx = ttk.Combobox(self, values=values, width=5, state="readonly")
-        names = elements.get_names()
-        combobx.current(current[0])
+        combobx.current(values.index(current[0]))
         combobx.place(x=60, y=self.attr_y)
         combobx.bind("<<ComboboxSelected>>", self.chouse_element)
         self.combodxs.append(combobx)
-        if current[0] > 6:
-            additional_combodxs = ttk.Combobox(self, values=elements[elements.index(combobx.get())].get_outputs(),
-                                               width=5, state="readonly")
-            additional_combodxs.current(current[1])
+
+        if values.index(current[0]) > 6:
+            values = elements[elements.index(combobx.get())].get_outputs()
+
+            additional_combodxs = ttk.Combobox(self, values=values, width=5, state="readonly")
+            additional_combodxs.current(values.index(current[1]))
             additional_combodxs.place(x=130, y=self.attr_y)
             additional_combodxs.bind("<<ComboboxSelected>>", self.chouse_element)
             self.additional_combodxs.append(additional_combodxs)
@@ -50,7 +54,7 @@ class SettingFrame(tk.Toplevel):
         settings = []
         for combodx in self.combodxs:
             if combodx.current() < 7: #check
-                settings.append([combodx.get()])
+                settings.append([combodx.get(), "-1"])
             else:
                 for com in self.additional_combodxs:
                     if combodx.winfo_rooty() == com.winfo_rooty():
@@ -69,8 +73,9 @@ class SettingFrame(tk.Toplevel):
             combobx.place(x=130, y=event.widget.winfo_rooty() - self.winfo_rooty())
             self.additional_combodxs.append(combobx)
         else:
-            for com in self.additional_combodxs:
-                if event.widget.winfo_rooty() == com.winfo_rooty():
-                    self.additional_combodxs.remove(com)
-                    com.destroy()
-                    break
+            if event.widget in self.combodxs:
+                for com in self.additional_combodxs:
+                    if event.widget.winfo_rooty() == com.winfo_rooty():
+                        self.additional_combodxs.remove(com)
+                        com.destroy()
+                        break
