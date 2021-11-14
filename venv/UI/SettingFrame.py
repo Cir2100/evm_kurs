@@ -28,20 +28,27 @@ class SettingFrame(tk.Toplevel):
     def add_input(self, name, current):
         label_selection = tk.Label(self, text=f"Вход {name}")
         label_selection.place(x=10, y=self.attr_y)
-        values = list(inputs_dict.values())
+        values = list(inputs_dict.keys())
         values.extend(elements.get_names_without_this(self.title_str))
         combobx = ttk.Combobox(self, values=values, width=5, state="readonly")
-        combobx.current(current)
+        names = elements.get_names()
+        combobx.current(current[0])
         combobx.place(x=60, y=self.attr_y)
         combobx.bind("<<ComboboxSelected>>", self.chouse_element)
         self.combodxs.append(combobx)
+        if current[0] > 6:
+            additional_combodxs = ttk.Combobox(self, values=elements[current[0] - 7].get_outputs(), width=5, state="readonly")
+            additional_combodxs.current(current[1])
+            additional_combodxs.place(x=130, y=self.attr_y)
+            additional_combodxs.bind("<<ComboboxSelected>>", self.chouse_element)
+            self.additional_combodxs.append(additional_combodxs)
 
         self.attr_y += 25
 
     def set_settings(self):
         settings = []
         for combodx in self.combodxs:
-            if combodx.current() < 6:
+            if combodx.current() < 7:
                 settings.append([combodx.get()])
             else:
                 for com in self.additional_combodxs:

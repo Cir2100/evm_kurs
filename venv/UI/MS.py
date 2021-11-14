@@ -7,16 +7,16 @@ class MS(Element):
     def __init__(self, root, name):
         super(MS, self).__init__(root, name)
         self.inputs = ["0", "0", "0", "0", "0", "0"]
-        self.inputs_ids = [0, 0, 0, 0, 0, 0]
+        self.inputs_ids = [[0, -1], [0, -1], [0, -1], [0, -1], [0, -1], [0, -1]]
         self.init_view()
 
     def init_view(self):
-        self.inputsID.append(self.create_text(self.start_text, 10, text=self.inputs[0]))
-        self.inputsID.append(self.create_text(self.start_text, 27, text=self.inputs[1]))
-        self.inputsID.append(self.create_text(self.start_text, 55, text=self.inputs[2]))
-        self.inputsID.append(self.create_text(self.start_text, 75, text=self.inputs[3]))
-        self.inputsID.append(self.create_text(self.start_text, 94, text=self.inputs[4]))
-        self.inputsID.append(self.create_text(self.start_text, 112, text=self.inputs[5]))
+        self.inputsTextview.append(self.create_text(self.start_text, 10, text=self.inputs[0]))
+        self.inputsTextview.append(self.create_text(self.start_text, 27, text=self.inputs[1]))
+        self.inputsTextview.append(self.create_text(self.start_text, 55, text=self.inputs[2]))
+        self.inputsTextview.append(self.create_text(self.start_text, 75, text=self.inputs[3]))
+        self.inputsTextview.append(self.create_text(self.start_text, 94, text=self.inputs[4]))
+        self.inputsTextview.append(self.create_text(self.start_text, 112, text=self.inputs[5]))
 
     def create_setting_dialog(self):
         settingFrame = SettingFrame(self.root, self.name, self)

@@ -23,7 +23,7 @@ class Element(tk.Canvas, metaclass=ABCMeta):
 
         self.root = root
         self.inputs = []
-        self.inputsID = []
+        self.inputsTextview = []
         self.inputs_ids = []
 
         self.name = name
@@ -60,18 +60,18 @@ class Element(tk.Canvas, metaclass=ABCMeta):
         raise NotImplementedError("check_ripeness method not implemented!")
 
     def update_view(self):
-        for i in range(len(self.inputsID)):
-            self.itemconfigure(self.inputsID[i], text=self.inputs[i])
+        for i in range(len(self.inputsTextview)):
+            self.itemconfigure(self.inputsTextview[i], text=self.inputs[i])
             if self.inputs[i][0] in inputs_dict:
-                self.inputs_ids[i] = inputs_dict[self.inputs[i][0]]
+                self.inputs_ids[i] = [inputs_dict[self.inputs[i][0]], -1]
             names = elements.get_names()
-            if self.inputs[i] in names:
-                index = names.index(self.inputs[i])
+            if self.inputs[i][0] in names:
+                index = names.index(self.inputs[i][0])
                 index_self = names.index(self.name)
                 flag = 0
                 if index_self < index:
                     flag = 1
-                self.inputs_ids[i] =  index + 7 - flag
+                self.inputs_ids[i] =  [index + 7 - flag, elements[index].get_outputs().index(self.inputs[i][1])]
 
 
     def updateInputs(self, settings):
