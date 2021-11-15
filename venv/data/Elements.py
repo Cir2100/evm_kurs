@@ -29,9 +29,9 @@ class Elements():
     def delete_element(self, obj):
         self.elements.remove(obj)
 
-    def update_inputs(self):
+    def update_view(self):
         for element in self.elements:
-            element.update_inputs()
+            element.update_view()
 
     def print_info(self):
         print("Info:")
