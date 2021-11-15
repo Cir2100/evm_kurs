@@ -13,7 +13,7 @@ class Element(tk.Canvas, metaclass=ABCMeta):
         self.image_size_y = image_size_y
         self.start_text = 20
 
-        super(Element, self).__init__(root, width=self.image_size_x, height=self.image_size_y, bg='white', bd=0)
+        super(Element, self).__init__(root, width=self.image_size_x, height=self.image_size_y, bg='white', highlightthickness=0)
 
         self.root = root
         self.inputs = []

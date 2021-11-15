@@ -2,7 +2,7 @@ import tkinter as tk
 
 class BacgroundCanvas(tk.Canvas):
     def __init__(self, root):
-        super(BacgroundCanvas, self).__init__(root, bg='white', bd=0)
+        super(BacgroundCanvas, self).__init__(root, bg='white', highlightthickness=0)
         self.pack(fill="both", expand=True)
 
     def add_line(self, x1, y1, x2, y2) -> int:
