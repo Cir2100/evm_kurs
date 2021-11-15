@@ -9,41 +9,42 @@ from data.inputs_dict import inputs_dict
 
 class Element(tk.Canvas, metaclass=ABCMeta):
     def __init__(self, root, name, image_size_x = 165, image_size_y = 145):
+
         self.image_size_x = image_size_x
         self.image_size_y = image_size_y
         self.start_text = 20
 
-        super(Element, self).__init__(root, width=self.image_size_x, height=self.image_size_y, bg='white', highlightthickness=0)
-
         self.root = root
+        self.name = name
+
         self.inputs = []
         self.inputsTextview = []
         self.name_inputs = []
         self.inputs_value = []
-        self.coords_inputs=[]
-        self.coords_outputs=[]
-        self.name = name
+        self.coords_inputs = []
+        self.coords_outputs = []
 
         self.lines = []
+
+        super(Element, self).__init__(root, width=self.image_size_x, height=self.image_size_y, bg='white', highlightthickness=0)
 
     def init_view(self):
         self.pack()
         self.place(x=0, y=0, anchor=tk.NW)
         self.bind("<B1-Motion>", self.move)
-        self.bind("<Double-Button-1>", lambda event: self.create_setting_dialog())
+        self.bind("<Double-Button-1>", lambda event: SettingFrame(self.root, self.name, self, self.name_inputs, self.inputs))
         self.bind("<Button-3>", self.create_dialog_menu)
         self.img = tk.PhotoImage(file=f"venv\\resources\\{self.name[0:2]}.png")
         imagesprite = self.create_image(20, 0, image=self.img, anchor=tk.NW)
 
-        self.create_text(95, 134, text=self.name, anchor=tk.N)
+        self.create_text(self.image_size_x // 2 + 10, self.image_size_y - 12, text=self.name, anchor=tk.N)
 
         for i in range(len(self.coords_inputs)):
             self.inputsTextview.append(self.create_text(self.start_text, self.coords_inputs[i] - 8, text=self.inputs[i][0]))
-            self.create_line(0, self.coords_inputs[i], 25, self.coords_inputs[i])
+            self.create_line(0, self.coords_inputs[i], 41, self.coords_inputs[i])
 
         for coordinate in self.coords_outputs:
-            self.create_line(self.image_size_x - 15, coordinate, self.image_size_x + 10, coordinate)
-
+            self.create_line(self.image_size_x - 23, coordinate, self.image_size_x + 10, coordinate)
 
     def get_name(self)-> str:
         return self.name
@@ -64,16 +65,8 @@ class Element(tk.Canvas, metaclass=ABCMeta):
     def delete_elemet(self):
         elements.delete_element(self)
         elements.update_view()
+        self.delete_lines()
         self.destroy()
-
-    def create_setting_dialog(self):
-        settingFrame = SettingFrame(self.root, self.name, self)
-        for i in range(len(self.name_inputs)):
-            settingFrame.add_input(self.name_inputs[i], self.inputs[i])
-
-    @abstractmethod
-    def get_outputs(self) -> list:
-        raise NotImplementedError("check_ripeness method not implemented!")
 
     def get_inputs(self) -> list:
         return self.inputs
@@ -104,15 +97,12 @@ class Element(tk.Canvas, metaclass=ABCMeta):
     def add_line(self, index):
         index_from = elements.index(self.inputs[index][0])
         index_output_from = elements[index_from].get_outputs().index(self.inputs[index][1])
-        self.lines.append(self.root.add_line(elements[index_from].winfo_rootx() - self.root.winfo_rootx() + 140,
+        self.lines.append(self.root.add_line(elements[index_from].winfo_rootx() -
+                                             self.root.winfo_rootx() + self.image_size_x - 20,
                            elements[index_from].winfo_rooty() - self.root.winfo_rooty() +
                            elements[index_from].get_coordinate_outputs()[index_output_from],
                            self.winfo_rootx() - self.root.winfo_rootx() + self.start_text,
                            self.winfo_rooty() - self.root.winfo_rooty() + self.coords_inputs[index]))
-
-    @abstractmethod
-    def get_outputs_value(self, params) -> list:
-        raise NotImplementedError("check_ripeness method not implemented!")
 
     def update_view(self):
         self.delete_lines()
@@ -131,3 +121,11 @@ class Element(tk.Canvas, metaclass=ABCMeta):
     def updateInputs(self, settings):
         self.inputs = settings
         self.update_view()
+
+    @abstractmethod
+    def get_outputs_value(self, params) -> list:
+        raise NotImplementedError("check_ripeness method not implemented!")
+
+    @abstractmethod
+    def get_outputs(self) -> list:
+        raise NotImplementedError("check_ripeness method not implemented!")

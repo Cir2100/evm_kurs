@@ -5,7 +5,7 @@ from data.Elements import elements
 from data.inputs_dict import inputs_dict
 
 class SettingFrame(tk.Toplevel):
-    def __init__(self, root, title_str, parent):
+    def __init__(self, root, title_str, parent, input_title, inputs_text):
         super(SettingFrame, self).__init__(root)
         self.title(title_str)
         self.geometry("200x190+400+300")
@@ -18,6 +18,9 @@ class SettingFrame(tk.Toplevel):
         self.additional_combodxs = []
         self.parent = parent
         self.title_str = title_str
+
+        for i in range(len(input_title)):
+            self.add_input(input_title[i], inputs_text[i])
 
     def init_view(self):
         button_ok = ttk.Button(self, text='ОК', command=self.set_settings)
@@ -63,19 +66,24 @@ class SettingFrame(tk.Toplevel):
         self.parent.updateInputs(settings)
         self.destroy()
 
+    def add_additional_combodxs(self, widget):
+        name = widget.get()
+        combobx = ttk.Combobox(self, values=elements[elements.index(widget.get())].get_outputs(),
+                               width=5, state="readonly")
+        combobx.current(0)
+        combobx.place(x=130, y=widget.winfo_rooty() - self.winfo_rooty())
+        self.additional_combodxs.append(combobx)
+
+    def delete_additional_combodxs(self, widget):
+        if widget in self.combodxs:
+            for com in self.additional_combodxs:
+                if widget.winfo_rooty() == com.winfo_rooty():
+                    self.additional_combodxs.remove(com)
+                    com.destroy()
+                    break
+
     def chouse_element(self, event):
         index = event.widget.current()
+        self.delete_additional_combodxs(event.widget)
         if (index > 6):
-            name = event.widget.get()
-            combobx = ttk.Combobox(self, values=elements[elements.index(event.widget.get())].get_outputs(),
-                                        width=5, state="readonly")
-            combobx.current(0)
-            combobx.place(x=130, y=event.widget.winfo_rooty() - self.winfo_rooty())
-            self.additional_combodxs.append(combobx)
-        else:
-            if event.widget in self.combodxs:
-                for com in self.additional_combodxs:
-                    if event.widget.winfo_rooty() == com.winfo_rooty():
-                        self.additional_combodxs.remove(com)
-                        com.destroy()
-                        break
+            self.add_additional_combodxs(event.widget)

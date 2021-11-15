@@ -24,10 +24,15 @@ class App(tk.Tk):
 
     def create_menu(self):
         add_menu = tk.Menu(master=self)
-        add_menu.add_command(label="Мультиплексор", command=lambda:elements.add_element(create_element("MS", self.bacgroung)))
-        add_menu.add_command(label="Дешифратор", command=lambda:elements.add_element(create_element("DC", self.bacgroung)))
-        add_menu.add_command(label="Шифратор", command=lambda:elements.add_element(create_element("CD", self.bacgroung)))
-        add_menu.add_command(label="Не", command=lambda:elements.add_element(create_element("NO", self.bacgroung)))
+
+        add_menu.add_command(label="Мультиплексор", command=lambda: elements.
+                             add_element(create_element("MS", self.bacgroung)))
+        add_menu.add_command(label="Дешифратор", command=lambda:elements.
+                             add_element(create_element("DC", self.bacgroung)))
+        add_menu.add_command(label="Шифратор", command=lambda:elements.
+                             add_element(create_element("CD", self.bacgroung)))
+        add_menu.add_command(label="Не", command=lambda:elements.
+                             add_element(create_element("NO", self.bacgroung)))
         add_menu.add_command(label="Выход", command=self.add_out)
         main_menu = tk.Menu(master=self, tearoff=0)
         main_menu.add_cascade(label="Добавить элемент", menu=add_menu)
