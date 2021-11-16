@@ -54,4 +54,7 @@ class Elements():
     def __getitem__(self, i):
         return self.elements[i]
 
+    def __len__(self):
+        return len(self.elements)
+
 elements = Elements()

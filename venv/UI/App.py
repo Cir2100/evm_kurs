@@ -6,6 +6,7 @@ from UI.BacroundCanvas import BacgroundCanvas
 from UI.TableView import TableView
 from data.Elements import elements
 from data.calcylate import calcylate
+import data.screenshot as screenshot
 
 from data.fabric import create_element
 
@@ -37,10 +38,19 @@ class App(tk.Tk):
         main_menu = tk.Menu(master=self, tearoff=0)
         main_menu.add_cascade(label="Добавить элемент", menu=add_menu)
         main_menu.add_command(label="Рассчитать",  command=self.calculate)
+        main_menu.add_command(label="Сохранить как",  command=self.get_scrinshot)
         self.config(menu=main_menu)
 
     def isInCreate(self) -> bool:
         return elements.get_count()["OUT"] == 1
+
+    def get_scrinshot(self):
+        try:
+            screenshot.save_scrinschot(screenshot.get_scrinshot(elements))
+        except NameError as err:
+            messagebox.showerror("Ошибка", err)
+        except ValueError:
+            messagebox.showerror("Ошибка", "Неверное расширение файла")
 
     def calculate(self):
         if self.isInCreate():

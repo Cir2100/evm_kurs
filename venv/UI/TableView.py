@@ -6,8 +6,14 @@ from screeninfo import get_monitors
 class TableView(tk.Toplevel):
     def __init__(self, root, elements):
         super(TableView, self).__init__(root)
+
+        style = ttk.Style(root)
+        aktualTheme = style.theme_use()
+        style.theme_create("dummy", parent=aktualTheme)
+        style.theme_use("dummy")
+        style.map('Treeview', background=[('selected', '#7d7f7d')])
+
         self.width_column = 20
-        #self.root = root
         self.title("Результаты")
         monitor = get_monitors()[0]
         self.geometry(f"{300}x{min(680, monitor.height)}+0+0")
@@ -24,11 +30,17 @@ class TableView(tk.Toplevel):
             self.tree.column(col, width=self.width_column, anchor=tk.CENTER)
             self.tree.heading(col, text=col)
 
-        self.tree.pack(fill="both", expand=True)
-
         ysb = ttk.Scrollbar(self, orient=tk.VERTICAL, command=self.tree.yview)
         self.tree.configure(yscroll=ysb.set)
 
+        self.tree.tag_configure('even', background='#E8E8E8')
+        self.tree.tag_configure('odd', background='#DFDFDF')
+
+        self.tree.pack(fill="both", expand=True)
+
     def insert_data(self, elements):
-        for el in elements:
-            self.tree.insert(parent="", index="end", values=el)
+        for i in range(len(elements)):
+            tags = ('even',)
+            if i % 2 == 1:
+                tags =  ('odd',)
+            self.tree.insert(parent="", index="end", values=elements[i], tags=tags)

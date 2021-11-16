@@ -8,7 +8,7 @@ from data.inputs_dict import inputs_dict
 
 
 class Element(tk.Canvas, metaclass=ABCMeta):
-    def __init__(self, root, name, image_size_x = 165, image_size_y = 145):
+    def __init__(self, root, name, image_size_x = 165, image_size_y = 147):
 
         self.image_size_x = image_size_x
         self.image_size_y = image_size_y
@@ -37,7 +37,7 @@ class Element(tk.Canvas, metaclass=ABCMeta):
         self.img = tk.PhotoImage(file=f"venv\\resources\\{self.name[0:2]}.png")
         imagesprite = self.create_image(20, 0, image=self.img, anchor=tk.NW)
 
-        self.create_text(self.image_size_x // 2 + 10, self.image_size_y - 12, text=self.name, anchor=tk.N)
+        self.create_text(self.image_size_x // 2 + 10, self.image_size_y - 17, text=self.name, anchor=tk.N)
 
         for i in range(len(self.coords_inputs)):
             self.inputsTextview.append(self.create_text(self.start_text, self.coords_inputs[i] - 8, text=self.inputs[i][0]))
