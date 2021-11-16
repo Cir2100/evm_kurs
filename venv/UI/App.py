@@ -46,7 +46,7 @@ class App(tk.Tk):
 
     def get_scrinshot(self):
         try:
-            screenshot.save_scrinschot(screenshot.get_scrinshot(elements))
+            screenshot.save_screenshot(screenshot.get_screenshot(elements))
         except NameError as err:
             messagebox.showerror("Ошибка", err)
         except ValueError:
