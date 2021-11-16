@@ -1,6 +1,8 @@
 import tkinter as tk
 from tkinter import ttk
 from abc import ABCMeta, abstractmethod
+import os
+import sys
 
 from UI.SettingFrame import SettingFrame
 from data.Elements import elements
@@ -24,7 +26,7 @@ class Element(tk.Canvas, metaclass=ABCMeta):
         self.coords_inputs = []
         self.coords_outputs = []
 
-        self.lines = []
+        self.lines_from = []
 
         super(Element, self).__init__(root, width=self.image_size_x, height=self.image_size_y, bg='white', highlightthickness=0)
 
@@ -34,7 +36,9 @@ class Element(tk.Canvas, metaclass=ABCMeta):
         self.bind("<B1-Motion>", self.move)
         self.bind("<Double-Button-1>", lambda event: SettingFrame(self.root, self.name, self, self.name_inputs, self.inputs))
         self.bind("<Button-3>", self.create_dialog_menu)
-        self.img = tk.PhotoImage(file=f"venv\\resources\\{self.name[0:2]}.png")
+        img_path = self.resource_path(os.path.join('venv\\resources', f'{self.name[0:2]}.png'))
+        #self.img = tk.PhotoImage(file=f"venv\\resources\\{self.name[0:2]}.png")
+        self.img = tk.PhotoImage(file=img_path)
         imagesprite = self.create_image(20, 0, image=self.img, anchor=tk.NW)
 
         self.create_text(self.image_size_x // 2 + 10, self.image_size_y - 17, text=self.name, anchor=tk.N)
@@ -49,13 +53,18 @@ class Element(tk.Canvas, metaclass=ABCMeta):
     def get_name(self)-> str:
         return self.name
 
+    def resource_path(self, relative):
+        if hasattr(sys, "_MEIPASS"):
+            return os.path.join(sys._MEIPASS, relative)
+        return os.path.join(relative)
+
     def move(self, event):
         coord_x = min(max(event.x_root - self.root.winfo_rootx(), self.image_size_x / 2),
                       self.root.winfo_width() - self.image_size_x / 2)
         coord_y = min(max(event.y_root - self.root.winfo_rooty(), self.image_size_y / 2),
                       self.root.winfo_height() - self.image_size_y / 2)
         self.place(x=coord_x, y=coord_y, anchor=tk.CENTER)
-        self.update_view()
+        elements.update_view()
 
     def create_dialog_menu(self, event):
         menu = tk.Menu(master=self.root, tearoff=0)
@@ -90,19 +99,20 @@ class Element(tk.Canvas, metaclass=ABCMeta):
                     self.inputs_value.append(params[index_element - 2])
 
     def delete_lines(self):
-        for line in self.lines:
+        for line in self.lines_from:
             self.root.delete(line)
-        self.lines.clear()
+        self.lines_from.clear()
 
-    def add_line(self, index):
+    def add_line_from(self, index):
         index_from = elements.index(self.inputs[index][0])
         index_output_from = elements[index_from].get_outputs().index(self.inputs[index][1])
-        self.lines.append(self.root.add_line(elements[index_from].winfo_rootx() -
+        lines = self.root.add_line(elements[index_from].winfo_rootx() -
                                              self.root.winfo_rootx() + self.image_size_x - 20,
                            elements[index_from].winfo_rooty() - self.root.winfo_rooty() +
                            elements[index_from].get_coordinate_outputs()[index_output_from],
                            self.winfo_rootx() - self.root.winfo_rootx() + self.start_text,
-                           self.winfo_rooty() - self.root.winfo_rooty() + self.coords_inputs[index]))
+                           self.winfo_rooty() - self.root.winfo_rooty() + self.coords_inputs[index])
+        self.lines_from.append(lines)
 
     def update_view(self):
         self.delete_lines()
@@ -111,7 +121,7 @@ class Element(tk.Canvas, metaclass=ABCMeta):
             if self.inputs[i][1] != "-1":
                 if self.inputs[i][0] in elements.get_names():
                     text = ""
-                    self.add_line(i)
+                    self.add_line_from(i)
                 else:
                     text = "0"
                     self.inputs[i] = ["0", "-1"]
