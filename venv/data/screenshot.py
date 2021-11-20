@@ -7,8 +7,8 @@ def get_screenshot(elements):
     max_x = -1
     max_y = -1
     for element in elements:
-        max_x = min(max_x, element.winfo_rootx() + element.image_size_x)
-        max_y = min(max_y, element.winfo_rooty() + element.image_size_x)
+        max_x = max(max_x, element.winfo_rootx() + element.image_size_x)
+        max_y = max(max_y, element.winfo_rooty() + element.image_size_x)
     screenshot = pyautogui.screenshot(region=(element.root.winfo_rootx(),
                                           element.root.winfo_rooty(),
                                           max_x, max_y))
