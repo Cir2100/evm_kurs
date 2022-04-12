@@ -107,7 +107,7 @@ class Element(tk.Canvas, metaclass=ABCMeta):
         index_from = elements.index(self.inputs[index][0])
         index_output_from = elements[index_from].get_outputs().index(self.inputs[index][1])
         lines = self.root.add_line(elements[index_from].winfo_rootx() -
-                                             self.root.winfo_rootx() + self.image_size_x - 20,
+                                             self.root.winfo_rootx() + elements[index_from].image_size_x - 20,
                            elements[index_from].winfo_rooty() - self.root.winfo_rooty() +
                            elements[index_from].get_coordinate_outputs()[index_output_from],
                            self.winfo_rootx() - self.root.winfo_rootx() + self.start_text,

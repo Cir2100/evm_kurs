@@ -21,6 +21,7 @@ class App(tk.Tk):
         self.geometry(f"{800}x{600}+0+0")
         self.bacgroung = BacgroundCanvas(self)
         self.create_menu()
+        self.create_theme_table_view()
         self.mainloop()
 
     def create_menu(self):
@@ -40,6 +41,13 @@ class App(tk.Tk):
         main_menu.add_command(label="Рассчитать",  command=self.calculate)
         main_menu.add_command(label="Сохранить как",  command=self.get_scrinshot)
         self.config(menu=main_menu)
+
+    def create_theme_table_view(self):
+        style = ttk.Style(self)
+        aktualTheme = style.theme_use()
+        style.theme_create("dummy", parent=aktualTheme)
+        style.theme_use("dummy")
+        style.map('Treeview', background=[('selected', '#7d7f7d')])
 
     def isInCreate(self) -> bool:
         return elements.get_count()["OUT"] == 1

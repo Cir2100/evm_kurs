@@ -7,12 +7,6 @@ class TableView(tk.Toplevel):
     def __init__(self, root, elements):
         super(TableView, self).__init__(root)
 
-        style = ttk.Style(root)
-        aktualTheme = style.theme_use()
-        style.theme_create("dummy", parent=aktualTheme)
-        style.theme_use("dummy")
-        style.map('Treeview', background=[('selected', '#7d7f7d')])
-
         self.width_column = 20
         self.title("Результаты")
         monitor = get_monitors()[0]
